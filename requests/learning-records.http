@@ -1,0 +1,31 @@
+### [テスト1] 学習記録を1件登録する (POST)
+# @name createRecord
+POST http://localhost:8080/api/learning-records
+Content-Type: application/json
+
+{
+  "recordDate": "2025-04-11",
+  "durationMinutes": 60,
+  "completedTasks": 1,
+  "learnedContent": "REST Client で API テスト",
+  "understoodPoints": "基本的なリクエストの送信方法",
+  "issues": "JSONの書き間違いに注意",
+  "nextActions": "GETリクエストをテストする",
+  "textAchievementLevel": 4
+}
+
+###
+
+### [テスト2] すべての学習記録を取得する (GET)
+# @name getAllRecords
+GET http://localhost:8080/api/learning-records
+Accept: application/json
+
+###
+
+### [テスト3] IDを指定して1件取得する (GET) - (まだAPI未実装の例)
+# @name getRecordById
+# GET http://localhost:8080/api/learning-records/1
+# Accept: application/json
+
+###

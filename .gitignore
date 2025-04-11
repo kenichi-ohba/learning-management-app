@@ -1,0 +1,55 @@
+# IDE/Editor specific
+.idea/
+.vscode/
+*.iml
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Build artifacts (Java/Maven/Gradle)
+target/
+build/
+out/
+*.jar
+*.war
+*.ear
+
+# Dependency directories (Node.js)
+node_modules/
+
+# Log files
+*.log
+logs/
+
+# Packaged files
+*.zip
+*.tar.gz
+*.rar
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Environment variables (sensitive)
+.env
+.env.*
+!/.env.example
+
+# Temporary files
+*.tmp
+
+# Other
+/learning-app-backend/HELP.md # Spring Initializr が生成するファイル (任意)
