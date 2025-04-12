@@ -14,7 +14,7 @@ import org.hibernate.annotations.UpdateTimestamp;   // Hibernate 固有アノテ
 @NoArgsConstructor // Lombok: 引数なしコンストラクタを自動生成
 @AllArgsConstructor // Lombok: 全てのフィールドを引数に持つコンストラクタを自動生成
 @Entity // ① このクラスが JPA エンティティであることを示す
-@Table(name = "learning_record") //　対応するテーブル名を指定
+@Table(name = "learning_records") //　対応するテーブル名を指定
 public class LearningRecord {
 
     @Id //主キーであることを示す

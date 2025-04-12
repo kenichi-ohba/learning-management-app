@@ -33,10 +33,10 @@
 | 3.1  | 基本連携・テスト     | API テスト (POST/GET)                               | ✅ 完了 | 低〜中     | REST Client 等での動作確認                             |
 | 3.2  | 基本連携・テスト     | React: 基本的な API 呼び出し実装                    | ✅ 完了 | 中         | `axios`, `useEffect`, `useState` を使用した疎通確認    |
 | 3.3  | 基本連携・テスト     | CORS 等の問題解決                                   | ✅ 完了 | 高         | エラー解決のトラブルシューティング                     |
-| 4.1  | コア機能 (CRUD)      | React: 学習記録入力フォーム作成                     | 未完了  | 中         | React フォームコンポーネント作成                       |
-| 4.2  | コア機能 (CRUD)      | React: 登録 API (POST) 連携                         | 未完了  | 中         | フォーム送信、`axios.post`                             |
-| 4.3  | コア機能 (CRUD)      | React: 学習記録一覧表示画面作成                     | 未完了  | 中         | データリスト表示コンポーネント                         |
-| 4.4  | コア機能 (CRUD)      | React: 一覧取得 API (GET) 連携                      | 未完了  | 中         | `useEffect`, `axios.get`, 状態更新                     |
+| 4.1  | コア機能 (CRUD)      | React: 学習記録入力フォーム作成                     | ✅ 完了  | 中         | React フォームコンポーネント作成                       |
+| 4.2  | コア機能 (CRUD)      | React: 登録 API (POST) 連携                         | ✅ 完了  | 中         | フォーム送信、`axios.post`                             |
+| 4.3  | コア機能 (CRUD)      | React: 学習記録一覧表示画面作成                     | ✅ 完了  | 中         | データリスト表示コンポーネント                         |
+| 4.4  | コア機能 (CRUD)      | React: 一覧取得 API (GET) 連携                      | ✅ 完了  | 中         | `useEffect`, `axios.get`, 状態更新                     |
 | 4.5  | コア機能 (CRUD)      | バックエンド: 更新 API (PUT) 実装                   | 未完了  | 中         | Service, Controller (ID 指定、データ更新)              |
 | 4.6  | コア機能 (CRUD)      | バックエンド: 削除 API (DELETE) 実装                | 未完了  | 中         | Service, Controller (ID 指定、データ削除)              |
 | 4.7  | コア機能 (CRUD)      | バックエンド: 詳細取得 API (GET by ID) 実装         | 未完了  | 中         | Service, Controller (ID 指定、データ取得)              |
