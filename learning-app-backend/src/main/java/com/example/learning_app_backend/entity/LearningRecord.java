@@ -23,7 +23,7 @@ public class LearningRecord {
 
     // ユーザーID(今回はまずLong型で。あとで　User Entityとの関連付けも可能
     @Column(nullable = false) //NOT NULL 誓約
-    private long userId; // (カラム名: user_id)
+    private Long userId; // (カラム名: user_id)
 
 
     @Column(nullable = false)

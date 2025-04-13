@@ -1,6 +1,7 @@
 package com.example.learning_app_backend.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.learning_app_backend.dto.LearningRecordDto;
 import com.example.learning_app_backend.entity.LearningRecord;
 import com.example.learning_app_backend.repository.LearningRecordRepository;
+import jakarta.persistence.EntityNotFoundException;
 
 @Service // ① このクラスが Service であることを示す (省略可能な場合もある)
 public class LearningRecordService {
@@ -77,6 +79,65 @@ public class LearningRecordService {
         // createdAt, updatedAt は自動設定されるので不要
         return entity;
     }
+    /**
+     * IDを指定して学習記録を1件取得する
+     * @param recordId 取得したい学習記録のID
+     * @return 見つかった学習記録のDTO
+     * @throws EntityNotFoundException 指定されたIDの記録が見つからない場合
+     */
+    @Transactional(readOnly = true)
+    public LearningRecordDto getRecordById(Long recordId) {
+        Optional<LearningRecord> optionalRecord = learningRecordRepository.findById(recordId);
+        LearningRecord record = optionalRecord.orElseThrow(() ->
+            new EntityNotFoundException("指定されたIDの学習記録が見つかりません:" + recordId)
+        );
+        return convertToDto(record);
+    }
+
+    /**
+     * 指定されたIDの学習記録を更新する
+     * @param recordId 更新したい学習記録のID
+     * @param learningRecordDto 更新内容を含むDTO
+     * @return 更新後の学習記録のDTO
+     * @throws EntityNotFoundException 指定されたIDの記録が見つからない場合
+     */
+    @Transactional
+    public LearningRecordDto updateRecord(Long recordId, LearningRecordDto learningRecordDto) {
+        LearningRecord existingRecord  = learningRecordRepository.findById(recordId)
+            .orElseThrow(() -> new EntityNotFoundException("更新対象の記録が見つかりません:" + recordId));
+        
+            // DTO の値で　Entity を更新（更新するフィールドを選択）
+            existingRecord.setRecordDate(learningRecordDto.getRecordDate());
+            existingRecord.setDurationMinutes(learningRecordDto.getDurationMinutes());
+            existingRecord.setCompletedTasks(learningRecordDto.getCompletedTasks());
+            existingRecord.setLearnedContent(learningRecordDto.getLearnedContent());
+            existingRecord.setUnderstoodPoints(learningRecordDto.getUnderstoodPoints());
+            existingRecord.setIssues(learningRecordDto.getIssues());
+            existingRecord.setNextActions(learningRecordDto.getNextActions());
+            existingRecord.setTextAchievementLevel(learningRecordDto.getTextAchievementLevel());
+            // 注意: userId や createdAt は通常更新しない
+
+            LearningRecord updatedRecord = learningRecordRepository.save(existingRecord);
+            return convertToDto(updatedRecord); // 既存の変換メソッドを使用
+    }   
+
+    /**
+     * 指定されたIDの学習記録を削除する
+     * @param recordId 削除したい学習記録のID
+     * @throws EntityNotFoundException 指定されたIDの記録が見つからない場合 (任意)
+     */
+    @Transactional
+    public void deleteRecord(Long recordId) {
+        // 存在確認
+        if (!learningRecordRepository.existsById(recordId)) {
+            throw new EntityNotFoundException("削除対象の記録が見つかりません: " + recordId);
+        }
+        learningRecordRepository.deleteById(recordId);
+    }
+
+    
+    
+                    
   
   
 }

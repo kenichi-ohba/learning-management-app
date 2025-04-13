@@ -37,10 +37,10 @@
 | 4.2  | コア機能 (CRUD)      | React: 登録 API (POST) 連携                         | ✅ 完了  | 中         | フォーム送信、`axios.post`                             |
 | 4.3  | コア機能 (CRUD)      | React: 学習記録一覧表示画面作成                     | ✅ 完了  | 中         | データリスト表示コンポーネント                         |
 | 4.4  | コア機能 (CRUD)      | React: 一覧取得 API (GET) 連携                      | ✅ 完了  | 中         | `useEffect`, `axios.get`, 状態更新                     |
-| 4.5  | コア機能 (CRUD)      | バックエンド: 更新 API (PUT) 実装                   | 未完了  | 中         | Service, Controller (ID 指定、データ更新)              |
-| 4.6  | コア機能 (CRUD)      | バックエンド: 削除 API (DELETE) 実装                | 未完了  | 中         | Service, Controller (ID 指定、データ削除)              |
-| 4.7  | コア機能 (CRUD)      | バックエンド: 詳細取得 API (GET by ID) 実装         | 未完了  | 中         | Service, Controller (ID 指定、データ取得)              |
-| 4.8  | コア機能 (CRUD)      | React: 更新・削除・詳細表示機能 実装                | 未完了  | 中〜高     | 編集フォーム、削除確認、モーダル表示など               |
+| 4.5  | コア機能 (CRUD)      | バックエンド: 更新 API (PUT) 実装                   | ✅ 完了  | 中         | Service, Controller (ID 指定、データ更新)              |
+| 4.6  | コア機能 (CRUD)      | バックエンド: 削除 API (DELETE) 実装                | ✅ 完了  | 中         | Service, Controller (ID 指定、データ削除)              |
+| 4.7  | コア機能 (CRUD)      | バックエンド: 詳細取得 API (GET by ID) 実装         | ✅ 完了  | 中         | Service, Controller (ID 指定、データ取得)              |
+| 4.8  | コア機能 (CRUD)      | React: 更新・削除・詳細表示機能 実装                | ✅ 完了  | 中〜高     | 編集フォーム、削除確認、モーダル表示など               |
 | 5.1  | 認証機能             | バックエンド: User Entity/Repo/Service 実装         | 未完了  | 中         | ユーザー情報管理                                       |
 | 5.2  | 認証機能             | **バックエンド: Security 設定詳細化**               | 未完了  | **高**     | PasswordEncoder, UserDetailsService, JWT/Session 等    |
 | 5.3  | 認証機能             | バックエンド: 登録/Login/Reset API 実装             | 未完了  | 中         | 認証ロジック                                           |

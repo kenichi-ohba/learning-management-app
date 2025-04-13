@@ -29,3 +29,52 @@ Accept: application/json
 # Accept: application/json
 
 ###
+
+### [A] Create Learning Record
+POST http://localhost:8080/api/learning-records
+Content-Type: application/json
+
+{
+  "recordDate": "2025-04-13",
+  "durationMinutes": 30,
+  "learnedContent": "APIテストデータ準備",
+  "understoodPoints": "POSTは動作確認済み",
+  "issues": "なし",
+  "nextActions": "GET by ID テスト",
+  "textAchievementLevel": 3
+}
+
+###
+
+### [B] Get Record By ID (2)
+GET http://localhost:8080/api/learning-records/2
+Accept: application/json
+
+###
+
+### [C] Get Record By ID (Not Found)
+GET http://localhost:8080/api/learning-records/9999
+Accept: application/json
+
+###
+
+### [D] Update Record
+PUT http://localhost:8080/api/learning-records/3
+Content-Type: application/json
+
+{
+  "recordDate": "2025-04-13",
+  "durationMinutes": 45,
+  "learnedContent": "API 更新テスト実施済み",
+  "understoodPoints": "PUTリクエスト成功",
+  "issues": "なし",
+  "nextActions": "DELETEテスト",
+  "textAchievementLevel": 5 
+}
+
+###
+
+### [E] Delete Record
+DELETE http://localhost:8080/api/learning-records/2
+
+###

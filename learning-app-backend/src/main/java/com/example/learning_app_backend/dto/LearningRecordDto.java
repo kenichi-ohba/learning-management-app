@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 public class LearningRecordDto {
 
   private Long recordId;
-
+  
   // userId はリクエストには含めずｍ、レスポンスに含めることが多い
   // 今回はシンプルにするため、レスポンスにも含めない例とする
   // private Long userId;

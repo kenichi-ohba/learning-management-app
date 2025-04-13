@@ -5,15 +5,14 @@ import LearningRecordList from './components/LearningRecordList.jsx'
 import './App.css'
 
 function App() {
-  // List を再読み込みさせるための state (単純な例)
-  // From でとうろくせいこうしたら値を更新して List を再読み込みさせる
-  const [listkey, setListKey] = useState(0);
+  //この state の値が変わると learningRecordList コンポーネントが再マウントされる
+  const [listkey, setListKey] = useState(Date.now());
   
-  // Form 空の通知を受け取る関数
+  // LearningRecordForm 呼び出される関数
   const handleRecordCreated = (newRecord) => {
-    console.log('新しい学習記録が登録されました:', newRecord);
-    // Listを強制的に再マウントさせるために key を変更
-    setListKey(prevKey => prevKey + 1);
+    console.log('App: 新しい記録が登録されたのでリストを更新します', newRecord);
+    // listKey の値を更新する事で、LearningRecordList コンポーネントが再マウントされる
+    setListKey(Date.now()); //  現在時刻などで値を強制的に変更
   };
 
 
@@ -27,7 +26,7 @@ function App() {
 
       <hr />
       {/* 学習記録リストを表示 */}
-      {/* key を渡す事で、 key が変わるとコンポーネントが再生成される */}
+      {/* key プロパティに listKey state を渡す */}
       <LearningRecordList key={listkey} />
       
 
