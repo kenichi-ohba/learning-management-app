@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import axios from 'axios';
 
-function LearningRecordList() {
+function LearningRecordList({onEdit, onDelete}) {
   // 学習記録のリストを保持するための state
   const [records, setRecords] =useState([]);
   // データ読み込み中かを示す state
@@ -48,15 +48,19 @@ return (
     {records.length === 0 ? (
       <p>学習記録がありません。</p>
     ) : (
-      <ul>
+      <ul style={{listStyle: 'none', padding: 0}}>
         {/* records 配列の各要素を record として繰り返し処理 */}
         {records.map((record) => (
           // key 属性には一意な値を指定する (recordId が適切)
           <li key={record.recordId}>
-            <strong>日付:</strong> {record.recordDate} |
-            <strong> 時間:</strong> {record.durationMinutes}分 |
-            <strong> 内容:</strong> {record.learnedContent}
+            <div><strong>日付:</strong> {record.recordDate}</div>
+            <div><strong> 時間:</strong> {record.durationMinutes}分</div>
+            <div><strong> 内容:</strong> {record.learnedContent}</div>
             {/* 必要に応じて他の情報も表示 */}
+            <div>
+              <button onClick={() => onEdit(record.recordId)} style={{ marginRight: '5px'}}>編集</button>
+              <button onClick={() => onDelete(record.recordId)}>削除</button>
+            </div>
           </li>
         ))}
       </ul>

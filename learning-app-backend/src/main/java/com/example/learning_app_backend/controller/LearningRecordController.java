@@ -2,10 +2,8 @@ package com.example.learning_app_backend.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 import com.example.learning_app_backend.dto.LearningRecordDto;
-import com.example.learning_app_backend.entity.LearningRecord;
 import com.example.learning_app_backend.service.LearningRecordService;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -29,7 +27,6 @@ public class LearningRecordController {
   private final LearningRecordService learningRecordService;
 
   // コンストラクタインジェクションで Service を注入
-  @Autowired
   public LearningRecordController(LearningRecordService learningRecordService) {
     this.learningRecordService = learningRecordService;
   }

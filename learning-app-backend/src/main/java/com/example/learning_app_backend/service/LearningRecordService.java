@@ -3,7 +3,6 @@ package com.example.learning_app_backend.service;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.example.learning_app_backend.dto.LearningRecordDto;
@@ -16,7 +15,7 @@ public class LearningRecordService {
 
   private final LearningRecordRepository learningRecordRepository;
 
-  @Autowired // ② コンストラクタインジェクション
+ 
   public LearningRecordService(LearningRecordRepository learningRecordRepository) {
     this.learningRecordRepository = learningRecordRepository;
   }
@@ -38,7 +37,7 @@ public class LearningRecordService {
         // ★★★ userId を設定する必要がある ★★★
         // 本来は Spring Security などでログインユーザーの ID を取得して設定する
         // ここでは仮に固定値を入れる (例: 1L)
-        learningRecord.setUserId(1L); // TODO: 認証情報から取得するように修正
+        learningRecord.setUserId(1L); 
 
         LearningRecord savedRecord = learningRecordRepository.save(learningRecord); // DB に保存
         return convertToDto(savedRecord); // 保存された Entity を DTO に変換して返す
