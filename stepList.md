@@ -41,9 +41,9 @@
 | 4.6  | コア機能 (CRUD)      | バックエンド: 削除 API (DELETE) 実装                | ✅ 完了  | 中         | Service, Controller (ID 指定、データ削除)              |
 | 4.7  | コア機能 (CRUD)      | バックエンド: 詳細取得 API (GET by ID) 実装         | ✅ 完了  | 中         | Service, Controller (ID 指定、データ取得)              |
 | 4.8  | コア機能 (CRUD)      | React: 更新・削除・詳細表示機能 実装                | ✅ 完了  | 中〜高     | 編集フォーム、削除確認、モーダル表示など               |
-| 5.1  | 認証機能             | バックエンド: User Entity/Repo/Service 実装         | 未完了  | 中         | ユーザー情報管理                                       |
-| 5.2  | 認証機能             | **バックエンド: Security 設定詳細化**               | 未完了  | **高**     | PasswordEncoder, UserDetailsService, JWT/Session 等    |
-| 5.3  | 認証機能             | バックエンド: 登録/Login/Reset API 実装             | 未完了  | 中         | 認証ロジック                                           |
+| 5.1  | 認証機能             | バックエンド: User Entity/Repo/Service 実装         |✅ 完了   | 中         | ユーザー情報管理                                       |
+| 5.2  | 認証機能             | **バックエンド: Security 設定詳細化**               |✅ 完了   | **高**     | PasswordEncoder, UserDetailsService, JWT/Session 等    |
+| 5.3  | 認証機能             | バックエンド: 登録/Login/Reset API 実装             |✅ 完了   | 中         | 認証ロジック                                           |
 | 5.4  | 認証機能             | React: 登録/Login 画面作成、API 連携                | 未完了  | 中〜高     | フォーム、API 呼び出し                                 |
 | 5.5  | 認証機能             | **React: Token/Session 処理, 認証状態管理**         | 未完了  | **高**     | LocalStorage/Context/Redux, Header 付与, Routing Guard |
 | 5.6  | 認証機能             | バックエンド: API アクセス制御修正                  | 未完了  | 中         | `permitAll` から `authenticated()` 等へ                |

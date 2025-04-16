@@ -1,9 +1,15 @@
 package com.example.learning_app_backend.config;
 
+import org.springframework.boot.autoconfigure.couchbase.CouchbaseProperties.Authentication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -24,11 +30,16 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(authz -> authz
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // OPTIONS はすべて許可
                 .requestMatchers("/api/test/hello").permitAll()
-                .requestMatchers("/api/learning-records/**").permitAll()
-                .anyRequest().permitAll() // または、テスト中はすべて許可してしまう（要復元）
-                //.anyRequest().authenticated()
+                // ↓↓↓ ユーザー登録 API (POST) を認証なしで許可 ↓↓↓
+                .requestMatchers(HttpMethod.POST, "/api/users/register").permitAll()
+                // ログイン API も認証なしで許可
+                .requestMatchers(HttpMethod.POST, "/api/users/login").permitAll()
+                .requestMatchers("/api/learning-records/**").authenticated() // ← これはまだテスト用に残しておくか検討
+                .anyRequest().authenticated()
             );
+            
 
         return http.build();
     }
@@ -51,5 +62,18 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        //BCrypt という協力なハッシュアルゴリズムを使用する Encoder を返す
+        return new BCryptPasswordEncoder();
+    }
+
+    // AuthenticationManager を Bean として公開するメソッドを追加
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
     
 }

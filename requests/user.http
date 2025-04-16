@@ -1,0 +1,44 @@
+### Register New User
+POST http://localhost:8080/api/users/register
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "password123",
+  "email": "test@example.com"
+}
+
+###
+
+### Login User (Success)
+POST http://localhost:8080/api/users/login
+Content-Type: application/json
+
+{
+  "username": "testuser", 
+  "password": "password123"
+}
+
+###
+
+### Login User (Wrong Password)
+POST http://localhost:8080/api/users/login
+Content-Type: application/json
+
+{
+  "username": "testuser", 
+  "password": "wrongpassword"
+}
+
+###
+
+### Login User (User Not Found)
+POST http://localhost:8080/api/users/login
+Content-Type: application/json
+
+{
+  "username": "unknownuser",
+  "password": "password123"
+}
+
+###
