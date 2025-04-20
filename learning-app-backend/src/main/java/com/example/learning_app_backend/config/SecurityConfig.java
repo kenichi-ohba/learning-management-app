@@ -1,6 +1,5 @@
 package com.example.learning_app_backend.config;
 
-import org.springframework.boot.autoconfigure.couchbase.CouchbaseProperties.Authentication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -36,11 +35,9 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/users/register").permitAll()
                 // ログイン API も認証なしで許可
                 .requestMatchers(HttpMethod.POST, "/api/users/login").permitAll()
-                .requestMatchers("/api/learning-records/**").authenticated() // ← これはまだテスト用に残しておくか検討
+                .requestMatchers("/api/learning-records/**").authenticated()
                 .anyRequest().authenticated()
             );
-            
-
         return http.build();
     }
 

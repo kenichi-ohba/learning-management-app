@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import axios from 'axios';
+import apiClient from '../api/axiosInstance';
 
 function LearningRecordList({onEdit, onDelete}) {
   // 学習記録のリストを保持するための state
@@ -16,7 +16,7 @@ function LearningRecordList({onEdit, onDelete}) {
       setError(null); // エラーをリセット
       try {
         //バックエンドの全件取得APIを呼び出す
-        const response = await axios.get('http://localhost:8080/api/learning-records');
+        const response = await apiClient.get('http://localhost:8080/api/learning-records');
         console.log('APIから取得したデータ:', response.data); // ← これを追加
         setRecords(response.data);// 取得したデータを state にセット
       } catch(err) {

@@ -1,116 +1,69 @@
-import React, { useState } from 'react'
-import axios from 'axios'
-import LearningRecordForm from './components/LearningRecordForm.jsx'
-import LearningRecordList from './components/LearningRecordList.jsx'  
-//import axios from 'axios'
-import './App.css'
+import React from "react";
+import { Routes, Route, Link, useNavigate } from "react-router-dom";
+import "./App.css";
+import { useAuth } from "./context/AuthContext";
+import HomePage from "./pages/HomePage";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
+import RecordsPage from "./pages/RecordsPage";
+import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
-  //この state の値が変わると learningRecordList コンポーネントが再マウントされる
-  const [listKey, setListKey] = useState(Date.now());
-  
-  // 編集フォームを表示するかどうかのフラグ
-  const [isEditing, setIsEditing] = useState(false);
-  // 現在編集中の記録の ID (なければ null)
-  const [editingRecordId, setEditingRecordId] = useState(null);
-  // 現在編集中の記録 ID (なければ null)
-  const [editingRecordData, setEditingRecordData] = useState(null);
+  // useAuth フックで isLoggedIn と logout を取得
+  const { isLoggedIn, logout, currentUser } = useAuth();
+  const navIgate = useNavigate(); // ページ遷移用
 
-  // LearningRecordForm 呼び出される関数
-  const handleRecordCreated = (newRecord) => {
-    console.log('App: 新しい記録が登録されたのでリストを更新します', newRecord);
-    // listKey の値を更新する事で、LearningRecordList コンポーネントが再マウントされる
-    setListKey(Date.now()); //  現在時刻などで値を強制的に変更
+  const handleLogout = () => {
+    logout(); // AuthContext の logout 関数を呼び出し (state更新 & localStorage削除)
+    navIgate("/login");
   };
-
-  //  削除ボタンが押されたときの処理関数
-  const handleDelete = async (recordId) => {
-    // 削除確認ダイアログを表示
-    if (window.confirm(`ID: ${recordId} の記録を本当に削除しますか？`)) {
-      try {
-        // バックエンドの削除APIを呼び出す
-        await axios.delete(`http://localhost:8080/api/learning-records/${recordId}`);
-        alert('削除しました。');
-        // 削除成功したらリストを更新
-        setListKey(Date.now());
-      } catch (err) {
-        console.error("削除に失敗しました:", err);
-        alert('削除に失敗しました。');
-      }
-    }
-  };
-
-  // 編集ボタンが押されたときの処理関数を追加
-  const handleEdit = async (recordId) => {
-    console.log(`App: ID: ${recordId} の記録を編集します`);
-    setIsEditing(true); // 編集モードにする
-    setEditingRecordId(recordId); // 編集対象の ID を保持
-
-    try {
-      const response = await axios.get(`http://localhost:8080/api/learning-records/${recordId}`);
-      setEditingRecordData(response.data); // 取得したデータを state に保存
-    } catch (err) {
-      console.error("編集データの取得に失敗:", err);
-      alert("編集データの取得に失敗しました。");
-      setIsEditing(false);
-      setEditingRecordId(null);
-      setEditingRecordData(null);
-    }
-  };
-    //--- ↓↓↓ 編集フォームで更新が完了したときの処理関数を追加
-    const handleUpdateComplete = () => {
-      console.log('App: 更新が完了しました');
-      setIsEditing(false);
-      setEditingRecordId(null);
-      setEditingRecordData(null);
-      setListKey(Date.now());
-    };
-
 
   return (
     <>
-      <h1>学習管理アプリ</h1>
-
-      {/* 学習記録入力フォームを表示 */}
-      {/* onRecordCreated プロパティとして関数を渡す */}
-      {/* --- ↓↓↓ 編集モードでない場合に新規登録フォームを表示 --- */}
-      {!isEditing && (<LearningRecordForm onRecordCreated={handleRecordCreated} />)}
-
-      {/* --- ↓↓↓ 編集モードの場合に編集用フォームを表示 --- */}
-      {isEditing && editingRecordData && (
-        <div>
-          <hr />
-          <h2>学習記録を編集(ID: {editingRecordId})</h2>
-          <LearningRecordForm
-          //key を渡して編集対象が変わったらフォームを再生成させる
-          key={editingRecordId}
-          // 編集対象の初期データとして渡す
-          initialData={editingRecordData}
-          // 更新完了に呼び出す関数を渡す
-          onUpdateComplete={handleUpdateComplete}
-          //編集モードであることを示すフラグ
-          isEditMode={true}
-          />
-          <button onClick={() => {
-            setIsEditing(false);
-            setEditingRecordId(null);
-            setEditingRecordData(null);
-          }} style={{ marginTop: '10px' }}>
-          編集をキャンセル
-          </button>
-        </div>
-      )}
-
+      <nav>
+        {isLoggedIn && currentUser ? (
+          <span>こんにちは、{currentUser.username} さん</span> // currentUser の中身に注意
+        ) : null}
+        <ul>
+          <li>
+            <Link to="/">ホーム</Link>
+          </li>
+          {isLoggedIn && (
+            <li>
+              <Link to="/records">学習記録</Link>
+            </li>
+          )}
+          {isLoggedIn ? (
+            <li>
+              <button onClick={handleLogout}>ログアウト</button>
+            </li>
+          ) : (
+            <>
+              <li>
+                <Link to="/login">ログイン</Link>
+              </li>
+              <li>
+                <Link to="/register">登録</Link>
+              </li>
+            </>
+          )}
+        </ul>
+      </nav>
       <hr />
-      {/* 学習記録リストを表示 */}
-      {/* LearningRecordList に onEdit と onDelete を渡す */}
-      <LearningRecordList
-       key={listKey} 
-       onEdit={handleEdit}
-       onDelete={handleDelete}
-       />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route
+          path="/records"
+          element={
+            <PrivateRoute>
+              <RecordsPage />
+            </PrivateRoute>
+          }
+        />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+      </Routes>
     </>
-  )
+  );
 }
-
 export default App;

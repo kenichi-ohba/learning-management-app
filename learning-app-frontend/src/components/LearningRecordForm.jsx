@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import apiClient from '../api/axiosInstance';
 
 // 親コンポーネントに登録成功を通知するための関数を受け取る
 function LearningRecordForm({
@@ -63,7 +63,7 @@ function LearningRecordForm({
       let response;
       if (isEditMode && initialData?.recordId) {
         // 更新 API を呼び出す
-        response = await axios.put(
+        response = await apiClient.put(
           `http://localhost:8080/api/learning-records/${initialData.recordId}`,
           recordData
         );
@@ -74,7 +74,7 @@ function LearningRecordForm({
         }
       } else {
         //登録 API (POST) を呼び出す
-        response = await axios.post(
+        response = await apiClient.post(
           "http://localhost:8080/api/learning-records",
           recordData
         );
