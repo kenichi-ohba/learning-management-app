@@ -7,37 +7,45 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
+import com.example.learning_app_backend.security.JwtAuthenticationFilter;
+import lombok.RequiredArgsConstructor;
 import java.util.List;
 
 // import static org.springframework.security.config.Customizer.withDefaults; // withDefaults は使わないので不要な場合も
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             // ↓↓↓ 詳細な CORS 設定 Bean を使うように指定 ↓↓↓
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(authz -> authz
-                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // OPTIONS はすべて許可
+            .csrf(AbstractHttpConfigurer::disable)// CSRF 無効化 (Spring Security 6.1+)
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+           .authorizeHttpRequests(authz -> authz
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/api/test/hello").permitAll()
-                // ↓↓↓ ユーザー登録 API (POST) を認証なしで許可 ↓↓↓
                 .requestMatchers(HttpMethod.POST, "/api/users/register").permitAll()
-                // ログイン API も認証なしで許可
                 .requestMatchers(HttpMethod.POST, "/api/users/login").permitAll()
                 .requestMatchers("/api/learning-records/**").authenticated()
                 .anyRequest().authenticated()
-            );
+            )
+            // ★★★ JwtAuthenticationFilter を UsernamePasswordAuthenticationFilter の前に追加 ★★★
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

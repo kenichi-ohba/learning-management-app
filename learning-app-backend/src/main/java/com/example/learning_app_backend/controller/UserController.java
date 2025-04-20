@@ -3,21 +3,21 @@ package com.example.learning_app_backend.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.learning_app_backend.dto.LoginRequestDto;
+import com.example.learning_app_backend.dto.LoginResponseDto;
 import com.example.learning_app_backend.dto.UserRegistrationDto;
 import com.example.learning_app_backend.entity.User;
+import com.example.learning_app_backend.security.JwtUtils;
 import com.example.learning_app_backend.service.UserService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -28,11 +28,15 @@ public class UserController {
 
   private final UserService userService;
   private final AuthenticationManager authenticationManager;
+  private final JwtUtils jwtUtils;
+
+  private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
 
-  public UserController(UserService userService, AuthenticationManager authenticationManager) {
+  public UserController(UserService userService, AuthenticationManager authenticationManager, JwtUtils jwtUtils) {
     this.userService = userService;
     this.authenticationManager = authenticationManager;
+    this.jwtUtils = jwtUtils;
   }
 
   // ↓↓↓ ユーザー登録 API エンドポイントを実装
@@ -65,14 +69,12 @@ public class UserController {
                                                                                                   // Server
                                                                                                   // Error
     }
-    // TODO: バリデーションエラー発生時のハンドリング (@Valid が機能した場合)
-    // これは @RestControllerAdvice を使ったグローバル例外ハンドリングで対応するのが一般的
+   
   }
 
 
   @PostMapping("/login")
-  public ResponseEntity<?> loginUser(@RequestBody LoginRequestDto loginRequestDto,
-      HttpServletRequest request) {
+  public ResponseEntity<?> loginUser(@RequestBody LoginRequestDto loginRequestDto) {
     try {
       // AuthenticationManager で認証を実行
       Authentication authentication = authenticationManager.authenticate(
@@ -80,23 +82,20 @@ public class UserController {
           new UsernamePasswordAuthenticationToken(loginRequestDto.getUsername(),
               loginRequestDto.getPassword()));
 
-      // 認証に成功した場合 SecurityContext に認証情報を設定
-      SecurityContextHolder.getContext().setAuthentication(authentication);
+      String jwt = jwtUtils.generateToken(authentication);
 
-      HttpSession session = request.getSession(true); // true でセッションがなければ新規作成
-      session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
-          SecurityContextHolder.getContext());
-      System.out.println("ログイン成功、セッションを作成/更新しました. Session ID: " + session.getId()); // 確認用ログ
-
-      // 認証成功のレスポンスを返す
-      // 本来はこのタイミングで JWT トークンなどを生成して返すことが多い
-      // 今回はまず成功下ことと認証情報を返すシンプルな例
       UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-      return ResponseEntity.ok("ログイン成功！ User:" + userDetails.getUsername());
+
+      LoginResponseDto responseDto = new LoginResponseDto();
+      responseDto.setToken(jwt);
+      responseDto.setUsername(userDetails.getUsername());
+
+      return ResponseEntity.ok(responseDto);
     } catch (AuthenticationException e) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
           .body("ログインに失敗しました: ユーザー名またはパスワードが正しくありません。");
     } catch (Exception e) {
+      logger.error("ログイン処理中に予期せぬエラーが発生しました。", e); // ★スタックトレース付きでログ出力
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("ログイン処理週にエラーが発生しました");
     }
   }
