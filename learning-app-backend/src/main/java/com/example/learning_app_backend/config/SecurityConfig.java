@@ -17,20 +17,17 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import com.example.learning_app_backend.security.JwtAuthenticationFilter;
-import lombok.RequiredArgsConstructor;
 import java.util.List;
 
 // import static org.springframework.security.config.Customizer.withDefaults; // withDefaults は使わないので不要な場合も
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
         http
             // ↓↓↓ 詳細な CORS 設定 Bean を使うように指定 ↓↓↓
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))

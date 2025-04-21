@@ -1,70 +1,107 @@
-import React, { createContext, useState, useContext, useEffect} from "react";
+import React, { createContext, useState, useContext, useEffect } from "react";
+//import apiClient from "../api/apiClient";
 
 //コンテキストオブジェクトを作成・エクスポート
 const AuthContext = createContext(null);
 
 // AuthProvider コンポーネントを作成・エクスポート
-export function AuthProvider({ children}) {
+export function AuthProvider({ children }) {
   //ログイン状態を管理する state (初期値は false)
-  const [isLoggedIn, setIsloggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   // ログインユーザー情報を管理する state (初期値は null)
   const [currentUser, setCurrentUser] = useState(null);
   //ローディング状態(アプリ起動時に localStorage を確認する間)
   const [isLoading, setIsLoading] = useState(true);
+  const [authToken, setAuthToken] = useState(null);
 
   // アプリ起動時に localStorage から認証情報を復元する処理
   useEffect(() => {
+    console.log("AuthProvider: Initializing authentication state...");
+    setIsLoading(true);
     try {
-      const storedUser = localStorage.getItem('authUser'); //'authUser' というキーで保存された情報を取得
-      if (storedUser) {
-        const userData = JSON.parse(storedUser); //JSON 文字列をオブジェクトに戻す
-        setCurrentUser(userData);// ユーザー情報を State にセット
-        setIsloggedIn(true);     // ログイン状態を true にセット
+      const token = localStorage.getItem("authToken");
+      const storedUser = localStorage.getItem("authUser");
+
+      if (token && storedUser) {
+        console.log("AuthProvider: Token and user info found in localStorage.");
+        const userData = JSON.parse(storedUser);
+        setAuthToken(token);
+        setCurrentUser(userData);
+        setIsLoggedIn(true);
+        console.log("AuthProvider: Authentication state restored.", userData);
+      } else {
+        console.log(
+          "AuthProvider: No token or user info found in localStorage."
+        );
+        localStorage.removeItem("suthToken");
+        localStorage.removeItem("authUser");
+        setIsLoggedIn(false);
+        setAuthToken(null);
       }
     } catch (error) {
-      console.error("localStorege からユーザー情報復元エラー:", error);
-      localStorage.removeItem('authUser');
+      console.error(
+        "AuthProvider: Error restoring authentication state:",
+        error
+      );
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("authUser");
+      setIsLoggedIn(false);
+      setCurrentUser(null);
+      setAuthToken(null);
     } finally {
-      setIsLoading(false); //ローディング完了
+      setIsLoading(false);
+      console.log('AuthProvider: Initialization complete.')
     }
-  },[]);
+
+  }, []);
 
   // ログイン処理関数
-  const login = (userData) => {
-    setIsloggedIn(true);
+  const login = (userData, token) => {
+    console.log('AuthProvider: login called', userData, token);
+    // ★ JWT を localStorage に保存
+    localStorage.setItem("authToken", token);
+    // ★ ユーザー情報も localStorage に保存 (文字列として保存)
+    localStorage.setItem("authUser", JSON.stringify(userData));
+    setAuthToken(token);
     setCurrentUser(userData);
-    //localStorege にユーザー情報を保存 (オブジェクトをJSON文字列に変換して保存)
-    localStorage.setItem('authUser', JSON.stringify(userData));
-    console.log("ログイン情報を保存しました:", userData);
+    setIsLoggedIn(true);
+   console.log('AuthProvider: User logged in and data saved.');
   };
 
   const logout = () => {
-    setIsloggedIn(false);
+    console.log("Logout function called");
+    // ★ localStorage から JWT とユーザー情報を削除
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("authUser");
+    setAuthToken(null);
     setCurrentUser(null);
-    // localStorage からユーザー情報を削除
-    localStorage.removeItem('authUser');
-    console.log("ログアウトし、保存情報を削除しました。");
-    //TODO: ログアウトのAPIを後で追加
+    setIsLoggedIn(false);
+
+    console.log('AuthProvider: User logged out and data removed.');
   };
 
   // Provider に渡す値 (state と関数をまとめたオブジェクト)
   const value = {
     isLoggedIn,
     currentUser,
-    isLoadingAuth: isLoading,
+    authToken,
+    isLoading,
     login,
     logout,
   };
 
+  if (isLoading) {
+    return <div>Loading authentication...</div>; // または null やスピナーコンポーネント
+  }
+
   // AuthContext.provider で children を囲み、value を提供する
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-
 }
 
-export function useAuth() {
+export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
-}
+};

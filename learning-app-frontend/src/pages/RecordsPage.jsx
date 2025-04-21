@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import apiClient from '../api/axiosInstance';
+import apiClient from '../api/apiClient';
 import LearningRecordForm from "../components/LearningRecordForm";
 import LearningRecordList from "../components/LearningRecordList";
 

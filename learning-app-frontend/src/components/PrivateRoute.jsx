@@ -3,12 +3,12 @@ import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext'; 
 
 function PrivateRoute({ children }) {
-  const { isLoggedIn, isLoadingAuth } = useAuth();
+  const { isLoggedIn, isLoading } = useAuth();
   const location = useLocation();
 
   // ★ 認証情報を localStorage から読み込んでいる間のローディング表示 ★
   //    これがないと、一瞬ログインページが表示されてしまう可能性がある
-  if (isLoadingAuth) {
+  if (isLoading) {
     return <div>認証情報を確認中...</div>
   }
   // ★ ログインしていない場合はログインページへリダイレクト ★

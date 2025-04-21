@@ -1,45 +1,63 @@
 package com.example.learning_app_backend.service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.example.learning_app_backend.dto.LearningRecordDto;
 import com.example.learning_app_backend.entity.LearningRecord;
+import com.example.learning_app_backend.entity.User;
 import com.example.learning_app_backend.repository.LearningRecordRepository;
+import com.example.learning_app_backend.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 
 @Service // ① このクラスが Service であることを示す (省略可能な場合もある)
 public class LearningRecordService {
 
-  private final LearningRecordRepository learningRecordRepository;
+    private final LearningRecordRepository learningRecordRepository;
+    private final UserRepository userRepository; // ← UserRepository を追加
 
- 
-  public LearningRecordService(LearningRecordRepository learningRecordRepository) {
-    this.learningRecordRepository = learningRecordRepository;
-  }
 
-  // 全件取得メソッド
-  @Transactional(readOnly = true)// 読み取り専用トランザクション
-  public List<LearningRecordDto> getAllRecords() {
-        List<LearningRecord> records = learningRecordRepository.findAll();
-        // Entity のリストを DTO のリストに変換して返す
-        return records.stream()
-                      .map(this::convertToDto) // 下で定義する変換メソッドを使用
-                      .collect(Collectors.toList());
+    public LearningRecordService(LearningRecordRepository learningRecordRepository,
+            UserRepository userRepository) {
+        this.learningRecordRepository = learningRecordRepository;
+        this.userRepository = userRepository;
     }
+
+    private Long getCurrentUserId() {
+        org.springframework.security.core.Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()
+                || "anonymousUser".equals(authentication.getPrincipal())) {
+            // 認証されていない場合の処理 (例外をスローするなど)
+            throw new IllegalStateException("ユーザーが認証されていません。");
+        }
+        String username = authentication.getName();
+        User currentUser = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("ユーザーが見つかりません: " + username));
+        return currentUser.getUserId();
+    }
+
+    // 全件取得メソッド
+    @Transactional(readOnly = true) // 読み取り専用トランザクション
+    public List<LearningRecordDto> getAllRecords() {
+        Long currentUserId = getCurrentUserId();
+        List<LearningRecord> records = learningRecordRepository.findByUserId(currentUserId);
+        // Entity のリストを DTO のリストに変換して返す
+        return records.stream().map(this::convertToDto) // 下で定義する変換メソッドを使用
+                .collect(Collectors.toList());
+    }
+
     // 新規登録メソッド
     @Transactional // 書き込みを含むトランザクション
     public LearningRecordDto createRecord(LearningRecordDto learningRecordDto) {
+        Long currentUserId = getCurrentUserId();
         LearningRecord learningRecord = convertToEntity(learningRecordDto); // DTO を Entity に変換
-
-        // ★★★ userId を設定する必要がある ★★★
-        // 本来は Spring Security などでログインユーザーの ID を取得して設定する
-        // ここでは仮に固定値を入れる (例: 1L)
-        learningRecord.setUserId(1L); 
-
+        learningRecord.setUserId(currentUserId);
         LearningRecord savedRecord = learningRecordRepository.save(learningRecord); // DB に保存
+
         return convertToDto(savedRecord); // 保存された Entity を DTO に変換して返す
     }
 
@@ -78,23 +96,25 @@ public class LearningRecordService {
         // createdAt, updatedAt は自動設定されるので不要
         return entity;
     }
+
     /**
      * IDを指定して学習記録を1件取得する
+     * 
      * @param recordId 取得したい学習記録のID
      * @return 見つかった学習記録のDTO
      * @throws EntityNotFoundException 指定されたIDの記録が見つからない場合
      */
     @Transactional(readOnly = true)
     public LearningRecordDto getRecordById(Long recordId) {
-        Optional<LearningRecord> optionalRecord = learningRecordRepository.findById(recordId);
-        LearningRecord record = optionalRecord.orElseThrow(() ->
-            new EntityNotFoundException("指定されたIDの学習記録が見つかりません:" + recordId)
-        );
+        Long currentUserId = getCurrentUserId();
+        LearningRecord record = learningRecordRepository.findByRecordIdAndUserId(recordId, currentUserId)
+                .orElseThrow(() -> new EntityNotFoundException("指定されたIDの学習記録が見つかりません:" + recordId));
         return convertToDto(record);
     }
 
     /**
      * 指定されたIDの学習記録を更新する
+     * 
      * @param recordId 更新したい学習記録のID
      * @param learningRecordDto 更新内容を含むDTO
      * @return 更新後の学習記録のDTO
@@ -102,41 +122,40 @@ public class LearningRecordService {
      */
     @Transactional
     public LearningRecordDto updateRecord(Long recordId, LearningRecordDto learningRecordDto) {
-        LearningRecord existingRecord  = learningRecordRepository.findById(recordId)
-            .orElseThrow(() -> new EntityNotFoundException("更新対象の記録が見つかりません:" + recordId));
-        
-            // DTO の値で　Entity を更新（更新するフィールドを選択）
-            existingRecord.setRecordDate(learningRecordDto.getRecordDate());
-            existingRecord.setDurationMinutes(learningRecordDto.getDurationMinutes());
-            existingRecord.setCompletedTasks(learningRecordDto.getCompletedTasks());
-            existingRecord.setLearnedContent(learningRecordDto.getLearnedContent());
-            existingRecord.setUnderstoodPoints(learningRecordDto.getUnderstoodPoints());
-            existingRecord.setIssues(learningRecordDto.getIssues());
-            existingRecord.setNextActions(learningRecordDto.getNextActions());
-            existingRecord.setTextAchievementLevel(learningRecordDto.getTextAchievementLevel());
-            // 注意: userId や createdAt は通常更新しない
+        Long currentUserId = getCurrentUserId();
+        LearningRecord existingRecord = learningRecordRepository.findByRecordIdAndUserId(recordId, currentUserId)
+                .orElseThrow(() -> new EntityNotFoundException("更新対象の記録が見つかりません:" + recordId));
 
-            LearningRecord updatedRecord = learningRecordRepository.save(existingRecord);
-            return convertToDto(updatedRecord); // 既存の変換メソッドを使用
-    }   
+        // DTO の値で Entity を更新（更新するフィールドを選択）
+        existingRecord.setRecordDate(learningRecordDto.getRecordDate());
+        existingRecord.setDurationMinutes(learningRecordDto.getDurationMinutes());
+        existingRecord.setCompletedTasks(learningRecordDto.getCompletedTasks());
+        existingRecord.setLearnedContent(learningRecordDto.getLearnedContent());
+        existingRecord.setUnderstoodPoints(learningRecordDto.getUnderstoodPoints());
+        existingRecord.setIssues(learningRecordDto.getIssues());
+        existingRecord.setNextActions(learningRecordDto.getNextActions());
+        existingRecord.setTextAchievementLevel(learningRecordDto.getTextAchievementLevel());
+
+        LearningRecord updatedRecord = learningRecordRepository.save(existingRecord);
+        return convertToDto(updatedRecord); // 既存の変換メソッドを使用
+    }
 
     /**
      * 指定されたIDの学習記録を削除する
+     * 
      * @param recordId 削除したい学習記録のID
      * @throws EntityNotFoundException 指定されたIDの記録が見つからない場合 (任意)
      */
     @Transactional
     public void deleteRecord(Long recordId) {
+        Long currentUserId = getCurrentUserId();
         // 存在確認
-        if (!learningRecordRepository.existsById(recordId)) {
+        if (!learningRecordRepository.existsByRecordIdAndUserId(recordId, currentUserId)) {
             throw new EntityNotFoundException("削除対象の記録が見つかりません: " + recordId);
         }
         learningRecordRepository.deleteById(recordId);
     }
 
-    
-    
-                    
-  
-  
+
+
 }

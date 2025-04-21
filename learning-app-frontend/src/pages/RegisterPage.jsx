@@ -1,5 +1,5 @@
 import React, { useState} from "react";
-import apiClient from '../api/axiosInstance';
+import apiClient from '../api/apiClient';
 import { useNavigate  } from "react-router-dom";// ページ遷移用フック
 
 function RegisterPage() {

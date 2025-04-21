@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import apiClient from '../api/axiosInstance';
+import apiClient from '../api/apiClient';
 
 // 親コンポーネントに登録成功を通知するための関数を受け取る
 function LearningRecordForm({

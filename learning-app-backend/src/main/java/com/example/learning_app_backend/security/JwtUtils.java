@@ -22,7 +22,7 @@ import javax.crypto.SecretKey;
 public class JwtUtils {
   private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
-  @Value("${jwt.secret}")
+  @Value("${JWT_SECRET}")
   private String jwtSecretString;
 
   @Value("${jwt.expiration-ms}")

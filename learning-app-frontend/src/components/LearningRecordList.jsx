@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import apiClient from '../api/axiosInstance';
+import apiClient from '../api/apiClient';
 
 function LearningRecordList({onEdit, onDelete}) {
   // 学習記録のリストを保持するための state
