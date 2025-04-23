@@ -1,4 +1,4 @@
-package com.example.learning_app_backend.service;
+package com.example.learningAppBackend.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -6,11 +6,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.example.learning_app_backend.dto.LearningRecordDto;
-import com.example.learning_app_backend.entity.LearningRecord;
-import com.example.learning_app_backend.entity.User;
-import com.example.learning_app_backend.repository.LearningRecordRepository;
-import com.example.learning_app_backend.repository.UserRepository;
+import com.example.learningAppBackend.dto.LearningRecordDto;
+import com.example.learningAppBackend.entity.LearningRecord;
+import com.example.learningAppBackend.entity.User;
+import com.example.learningAppBackend.repository.LearningRecordRepository;
+import com.example.learningAppBackend.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 
 @Service // ① このクラスが Service であることを示す (省略可能な場合もある)

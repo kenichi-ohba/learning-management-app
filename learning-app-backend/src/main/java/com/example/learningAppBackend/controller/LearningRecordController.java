@@ -1,8 +1,8 @@
-package com.example.learning_app_backend.controller;
+package com.example.learningAppBackend.controller;
 
 import org.springframework.web.bind.annotation.RestController;
-import com.example.learning_app_backend.dto.LearningRecordDto;
-import com.example.learning_app_backend.service.LearningRecordService;
+import com.example.learningAppBackend.dto.LearningRecordDto;
+import com.example.learningAppBackend.service.LearningRecordService;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

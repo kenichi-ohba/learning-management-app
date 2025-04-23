@@ -1,4 +1,4 @@
-package com.example.learning_app_backend;
+package com.example.learningAppBackend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

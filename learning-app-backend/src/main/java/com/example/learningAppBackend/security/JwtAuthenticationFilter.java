@@ -1,4 +1,4 @@
-package com.example.learning_app_backend.security;
+package com.example.learningAppBackend.security;
 
 import java.io.IOException;
 import org.slf4j.Logger;

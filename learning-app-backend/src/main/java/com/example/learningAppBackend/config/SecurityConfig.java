@@ -1,4 +1,4 @@
-package com.example.learning_app_backend.config;
+package com.example.learningAppBackend.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import com.example.learning_app_backend.security.JwtAuthenticationFilter;
+import com.example.learningAppBackend.security.JwtAuthenticationFilter;
 import java.util.List;
 
 // import static org.springframework.security.config.Customizer.withDefaults; // withDefaults は使わないので不要な場合も
@@ -39,6 +39,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/users/register").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/users/login").permitAll()
                 .requestMatchers("/api/learning-records/**").authenticated()
+                .requestMatchers("/api/dashboard/**").authenticated()
                 .anyRequest().authenticated()
             )
             // ★★★ JwtAuthenticationFilter を UsernamePasswordAuthenticationFilter の前に追加 ★★★

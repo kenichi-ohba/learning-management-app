@@ -1,9 +1,9 @@
-package com.example.learning_app_backend.repository;
+package com.example.learningAppBackend.repository;
 
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import com.example.learning_app_backend.entity.User;
+import com.example.learningAppBackend.entity.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {

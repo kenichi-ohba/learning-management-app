@@ -1,4 +1,4 @@
-package com.example.learning_app_backend.entity;
+package com.example.learningAppBackend.entity;
 
 import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;

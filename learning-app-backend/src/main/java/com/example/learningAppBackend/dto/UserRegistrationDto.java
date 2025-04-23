@@ -1,4 +1,4 @@
-package com.example.learning_app_backend.dto;
+package com.example.learningAppBackend.dto;
 
 // import jakarta.validation.constraints.Email;
 // import jakarta.validation.constraints.NotBlank;

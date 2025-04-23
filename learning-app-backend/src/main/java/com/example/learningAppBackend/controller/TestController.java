@@ -1,4 +1,4 @@
-package com.example.learning_app_backend.controller;
+package com.example.learningAppBackend.controller;
 
 import java.util.Map;
 import org.springframework.web.bind.annotation.CrossOrigin;

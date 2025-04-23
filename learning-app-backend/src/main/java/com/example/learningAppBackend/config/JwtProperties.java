@@ -1,4 +1,4 @@
-package com.example.learning_app_backend.config;
+package com.example.learningAppBackend.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;

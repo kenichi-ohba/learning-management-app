@@ -1,4 +1,4 @@
-package com.example.learning_app_backend.service;
+package com.example.learningAppBackend.service;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -8,9 +8,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.example.learning_app_backend.dto.UserRegistrationDto;
-import com.example.learning_app_backend.entity.User;
-import com.example.learning_app_backend.repository.UserRepository;
+import com.example.learningAppBackend.dto.UserRegistrationDto;
+import com.example.learningAppBackend.entity.User;
+import com.example.learningAppBackend.repository.UserRepository;
 
 @Service
 public class UserService implements UserDetailsService {

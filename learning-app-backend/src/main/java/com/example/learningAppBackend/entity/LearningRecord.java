@@ -1,4 +1,4 @@
-package com.example.learning_app_backend.entity;
+package com.example.learningAppBackend.entity;
 
 import jakarta.persistence.*; // JPA アノテーション用
 import lombok.Data; // Lombok アノテーション (Getter, Setter, toString など)

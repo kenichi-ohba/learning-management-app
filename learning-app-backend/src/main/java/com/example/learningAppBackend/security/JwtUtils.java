@@ -1,4 +1,4 @@
-package com.example.learning_app_backend.security;
+package com.example.learningAppBackend.security;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

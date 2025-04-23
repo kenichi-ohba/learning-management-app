@@ -1,13 +1,13 @@
-package com.example.learning_app_backend.controller;
+package com.example.learningAppBackend.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.example.learning_app_backend.dto.LoginRequestDto;
-import com.example.learning_app_backend.dto.LoginResponseDto;
-import com.example.learning_app_backend.dto.UserRegistrationDto;
-import com.example.learning_app_backend.entity.User;
-import com.example.learning_app_backend.security.JwtUtils;
-import com.example.learning_app_backend.service.UserService;
+import com.example.learningAppBackend.dto.LoginRequestDto;
+import com.example.learningAppBackend.dto.LoginResponseDto;
+import com.example.learningAppBackend.dto.UserRegistrationDto;
+import com.example.learningAppBackend.entity.User;
+import com.example.learningAppBackend.security.JwtUtils;
+import com.example.learningAppBackend.service.UserService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
