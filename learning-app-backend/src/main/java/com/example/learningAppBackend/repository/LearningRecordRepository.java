@@ -47,8 +47,8 @@ public interface LearningRecordRepository extends JpaRepository<LearningRecord, 
      * @param endDate
      * @return 記録件数
      */
-    @Query("SELECT COUNT(lr) FROM LearninggRecord lr.userId = :userId AND lr.recordDate >= :startDate AND lr.recordDate <= endDate")
-    Long countRevordsForUserBetween(@Param("userId") Long userId, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+    @Query("SELECT COUNT(lr) FROM LearningRecord lr WHERE lr.userId = :userId AND lr.recordDate >= :startDate AND lr.recordDate <= :endDate")
+    Long countRecordsForUserBetween (@Param("userId") Long userId, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
     /**
      * 指定ユーザーIDの最新の学習記録を指定された件数だけ取得します。

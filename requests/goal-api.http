@@ -1,0 +1,82 @@
+```http
+# 変数定義 (ファイルの先頭に記述)
+@baseUrl = http://localhost:8080/api
+@authToken = Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0dXNlciIsImlhdCI6MTc0NTU0NTQ3NSwiZXhwIjoxNzQ1NTQ5MDc1fQ.6HL55Eld74WKaPP8FHe_4lait315kr5ArweyHYcUBRkcytfIIDZTvfVLz9ilxStzWrFBW7bNg2sUSkUSGk8plA
+
+### [ログイン] ユーザー名とパスワードでログインし JWT を取得
+# @name loginForGoalTest
+POST {{baseUrl}}/users/login
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "password123"
+}
+
+###
+
+### [目標登録] 新しい目標を作成する
+# @name createGoal
+POST {{baseUrl}}/goals
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+  "description": "Spring Boot のテストコードを学ぶ",
+  "targetDate": "2025-04-30", 
+  "goalType": "WEEKLY"        
+  
+}
+
+###
+
+### [目標一覧取得] ログインユーザーの全ての目標を取得する
+# @name getAllGoals
+GET {{baseUrl}}/goals
+Authorization: {{authToken}}
+Accept: application/json
+
+###
+
+### [目標詳細取得] ID を指定して目標を取得する (成功)
+# @name getGoalByIdSuccess
+# ↓↓↓ URL の最後の {メモしたID} を実際の ID に置き換える ↓↓↓
+GET {{baseUrl}}/goals/1
+Authorization: {{authToken}}
+Accept: application/json
+
+###
+
+
+### [目標詳細取得] 存在しない ID を指定 (失敗)
+# @name getGoalByIdNotFound
+GET {{baseUrl}}/goals/9999
+Authorization: {{authToken}}
+Accept: application/json
+
+###
+
+
+### [目標更新] ID を指定して目標の内容や状態を更新する
+# @name updateGoal
+# ↓↓↓ URL の最後の {メモしたID} を実際の ID に置き換える ↓↓↓
+PUT {{baseUrl}}/goals/1
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+  "description": "Spring Boot のテストコードを**実践する**",
+  "targetDate": "2025-05-05", 
+  "status": "IN_PROGRESS",
+  "goalType": "WEEKLY"
+}
+
+###
+
+### [目標削除] ID を指定して目標を削除する
+# @name deleteGoal
+# ↓↓↓ URL の最後の {メモしたID} を実際の ID に置き換える ↓↓↓
+DELETE {{baseUrl}}/goals/1
+Authorization: {{authToken}}
+
+###

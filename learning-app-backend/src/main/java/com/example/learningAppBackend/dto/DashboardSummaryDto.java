@@ -15,8 +15,4 @@ public class DashboardSummaryDto {
   /** 最新の学習記録(DTO のリスト) */
   private List<LearningRecordDto> recentRecords;
 
-  
-
-
-
 }

@@ -35,11 +35,11 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
            .authorizeHttpRequests(authz -> authz
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .requestMatchers("/api/test/hello").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/users/register").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/users/login").permitAll()
                 .requestMatchers("/api/learning-records/**").authenticated()
                 .requestMatchers("/api/dashboard/**").authenticated()
+                .requestMatchers("/api/goals/**").authenticated()
                 .anyRequest().authenticated()
             )
             // ★★★ JwtAuthenticationFilter を UsernamePasswordAuthenticationFilter の前に追加 ★★★
