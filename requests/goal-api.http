@@ -1,7 +1,7 @@
 ```http
 # 変数定義 (ファイルの先頭に記述)
 @baseUrl = http://localhost:8080/api
-@authToken = Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0dXNlciIsImlhdCI6MTc0NTU0NTQ3NSwiZXhwIjoxNzQ1NTQ5MDc1fQ.6HL55Eld74WKaPP8FHe_4lait315kr5ArweyHYcUBRkcytfIIDZTvfVLz9ilxStzWrFBW7bNg2sUSkUSGk8plA
+@authToken = Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0dXNlciIsImlhdCI6MTc0NTU2OTU0MywiZXhwIjoxNzQ1NTczMTQzfQ.50Kzq0lEomCUZG1cr0eKSN42dogJYAypdpQCpASvNKc1FdGeRMrV1xH7QUEdZJ743z6x1gkz5XT6ZGgmxmG6Fw
 
 ### [ログイン] ユーザー名とパスワードでログインし JWT を取得
 # @name loginForGoalTest

@@ -7,6 +7,7 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import RecordsPage from "./pages/RecordsPage";
 import PrivateRoute from "./components/PrivateRoute";
+import GoalsPage from './pages/GoalsPage';
 
 function App() {
   // useAuth フックで isLoggedIn と logout を取得
@@ -28,11 +29,8 @@ function App() {
           <li>
             <Link to="/">ホーム</Link>
           </li>
-          {isLoggedIn && (
-            <li>
-              <Link to="/records">学習記録</Link>
-            </li>
-          )}
+          {isLoggedIn && <li><Link to="/records">学習記録</Link></li>}
+          {isLoggedIn && <li><Link to="/goals">目標管理</Link></li>}
           {isLoggedIn ? (
             <li>
               <button onClick={handleLogout}>ログアウト</button>
@@ -57,6 +55,14 @@ function App() {
           element={
             <PrivateRoute>
               <RecordsPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/goals"
+          element={
+            <PrivateRoute>
+              <GoalsPage/>
             </PrivateRoute>
           }
         />
