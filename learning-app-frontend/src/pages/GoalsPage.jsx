@@ -9,9 +9,9 @@ function GoalsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [listKey, setListKey] = useState(Date.now());
-  // const [isEditing, setIsEditing] = useState(false);
-  // const [editingRecordId, setEditingRecordId] = useState(null);
-  // const [editingRecordData, setEditingRecordData] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingGoalId, setEditingGoalId] = useState(null); // 編集中 ID
+  const [editingGoalData, setEditingGoalData] = useState(null); // 編集中データ
 
   useEffect(() => {
     const fetchGoals = async () => {
@@ -59,10 +59,26 @@ function GoalsPage() {
     }
   };
 
-  // --- (将来追加) 編集処理関数 ---
-  const handleEditGoal = (goalId) => {
-    console.log(`GoalsPage: Edit goal ID: ${goalId} (Not implemented yet)`);
-    // 編集フォーム表示のロジックをここに追加
+  // 編集処理関数 ---
+  const handleEditGoal = async (goalId) => {
+    console.log(`GoalsPage: Edit goal ID: ${goalId}`);
+    setError(null); // 他のエラーをクリア
+    setIsEditing(true);
+    setEditingGoalId(goalId);
+
+    // 編集対象の最新データをAPIから取得する
+    try {
+      // ★ GET /api/goals/{id} を呼び出す ★
+      const response = await apiClient.get(`/goals/${goalId}`);
+      setEditingGoalData(response.data); // 取得したデータを state に保存
+    } catch (err) {
+      console.error("GoalsPage: 編集対象データの取得に失敗:", err);
+      alert("編集データの取得に失敗しました。");
+      // エラーなら編集モードを解除
+      setIsEditing(false);
+      setEditingGoalId(null);
+      setEditingGoalData(null);
+    }
   };
 
   // 状態更新処理関数 ---
@@ -81,9 +97,7 @@ function GoalsPage() {
       ...targetGoal, // 既存のデータをコピー
       status: newStatus // status だけ新しい値で上書き
     };
-    // 不要な情報は削除 (バックエンドの DTO に合わせる)
     delete updatedGoalData.goalId; // ID は URL で送るのでボディには不要
-    // delete updatedGoalData.userId; // userId も通常は不要
 
     try {
       // バックエンドの更新 API (PUT /api/goals/{id}) を呼び出す
@@ -95,11 +109,49 @@ function GoalsPage() {
       alert('目標の状態更新に失敗しました。');
     }
   };
+     // 編集フォームで更新が完了したときの処理関数
+   const handleUpdateComplete = () => {
+    console.log('GoalsPage: 更新が完了しました');
+    setIsEditing(false); // 編集モードを解除
+    setEditingGoalId(null); // 編集対象情報をクリア
+    setEditingGoalData(null);
+    setListKey(Date.now()); // リストを更新
+  };
   return (
     <div>
       <h1>目標管理</h1>
+      {!isEditing && (
+        <GoalForm onCreateGoal={handleCreateGoal} />
+      )}
 
-      <GoalForm onCreateGoal={handleCreateGoal} />
+      {/* --- ↓↓↓ 編集モードの場合に編集用フォームを表示 ↓↓↓ --- */}
+      {isEditing && editingGoalData && (
+        <div className="mt-8 border-t pt-6"> {/* 少し見た目を調整 */}
+          <h2 className="text-xl font-semibold mb-4">
+            目標を編集 (ID: {editingGoalId})
+          </h2>
+          <GoalForm
+            // key を渡して編集対象が変わったらフォームを再生成 (重要)
+            key={editingGoalId}
+            // 編集対象の初期データとして渡す
+            initialData={editingGoalData}
+            // 更新完了時に呼び出す関数を渡す
+            onUpdateComplete={handleUpdateComplete}
+            // 編集モードであることを示すフラグ
+            isEditMode={true}
+          />
+          <button
+            onClick={() => { // キャンセルボタン
+              setIsEditing(false);
+              setEditingGoalId(null);
+              setEditingGoalData(null);
+            }}
+            className="mt-4 px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
+          >
+            編集をキャンセル
+          </button>
+        </div>
+      )}
 
       {isLoading && <p>目標を読み込み中...</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
