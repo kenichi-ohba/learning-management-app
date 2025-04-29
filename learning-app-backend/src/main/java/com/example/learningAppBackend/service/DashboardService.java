@@ -16,6 +16,8 @@ import com.example.learningAppBackend.dto.DashboardSummaryDto;
 import com.example.learningAppBackend.dto.LearningRecordDto;
 import com.example.learningAppBackend.entity.LearningRecord;
 import com.example.learningAppBackend.entity.User;
+import com.example.learningAppBackend.enumeration.GoalStatus;
+import com.example.learningAppBackend.repository.GoalRepository;
 import com.example.learningAppBackend.repository.LearningRecordRepository;
 import com.example.learningAppBackend.repository.UserRepository;
 
@@ -23,13 +25,17 @@ import com.example.learningAppBackend.repository.UserRepository;
 public class DashboardService {
   private final LearningRecordRepository learningRecordRepository;
   private final UserRepository userRepository;
+  private final GoalRepository goalRepository;
 
   public DashboardService(LearningRecordRepository learningRecordRepository,
-      UserRepository userRepository) {
+      UserRepository userRepository,
+      GoalRepository goalRepository) {
     this.learningRecordRepository = learningRecordRepository;
     this.userRepository = userRepository;
+    this.goalRepository = goalRepository;
   }
 
+  // ログインユーザーID取得ヘルパーメソッド
   private Long getCurrentUserId() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     if (authentication == null || !authentication.isAuthenticated()
@@ -48,7 +54,7 @@ public class DashboardService {
    * @return DashboardSummaryDto
    */
   @Transactional(readOnly = true)
-  public DashboardSummaryDto geDashboardSummary() {
+  public DashboardSummaryDto getDashboardSummary() {
     Long currentUserId = getCurrentUserId();
     LocalDate today = LocalDate.now();
 
@@ -59,8 +65,8 @@ public class DashboardService {
     // Respository メソッドを呼び出してデータを取得
     Integer totalDuration = learningRecordRepository.sumDurationMinutesForUserBetween(currentUserId,startOfWeek, endOfWeek);
     Long recordCount = learningRecordRepository.countRecordsForUserBetween(currentUserId, startOfWeek, endOfWeek);
-
     Pageable top3 = PageRequest.of(0, 3); // 0ページ目 (最初のページ) を 3 件取
+
     List<LearningRecord> recentEntities =
         learningRecordRepository.findByUserIdOrderByRecordDateDescRecordIdDesc(currentUserId, top3);
 
@@ -68,11 +74,18 @@ public class DashboardService {
     List<LearningRecordDto> recentDtos = recentEntities.stream().map(this::convertToDto) // ↓で定義する変換メソッドを使用
         .collect(Collectors.toList());
 
+    List<GoalStatus> pendingStatuses = List.of(GoalStatus.PENDING, GoalStatus.IN_PROGRESS);
+
+    Long pendingToday = goalRepository.countByUserIdAndTargetDateAndStatusIn(currentUserId, endOfWeek, pendingStatuses);
+    Long pendingThisWeek = goalRepository.countByUserIdAndTargetDateBetweenAndStatusIn(currentUserId, startOfWeek, endOfWeek, pendingStatuses);
+    
     // 結果を DTO に詰める
     DashboardSummaryDto summary = new DashboardSummaryDto();
     summary.setTotalDurationThisWeek(totalDuration);
     summary.setRecordCountThisWeek(recordCount);
     summary.setRecentRecords(recentDtos);
+    summary.setPendingGoalsTodayCount(pendingToday);
+    summary.setPendingGoalsThisWeekCount(pendingThisWeek);
 
     return summary;
   }

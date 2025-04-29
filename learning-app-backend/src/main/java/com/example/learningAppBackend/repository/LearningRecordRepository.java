@@ -48,7 +48,7 @@ public interface LearningRecordRepository extends JpaRepository<LearningRecord, 
      * @return 記録件数
      */
     @Query("SELECT COUNT(lr) FROM LearningRecord lr WHERE lr.userId = :userId AND lr.recordDate >= :startDate AND lr.recordDate <= :endDate")
-    Long countRecordsForUserBetween (@Param("userId") Long userId, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+    Long countRecordsForUserBetween(@Param("userId") Long userId, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
     /**
      * 指定ユーザーIDの最新の学習記録を指定された件数だけ取得します。
@@ -57,5 +57,4 @@ public interface LearningRecordRepository extends JpaRepository<LearningRecord, 
      * @param pageable ページネーション情報 (取得件数、ソート順などを含む)
      * @return 学習記録 Entity のリスト
      */
-    List<LearningRecord> findByUserIdOrderByRecordDateDescRecordIdDesc(Long userId, Pageable pageable);
-}
+    List<LearningRecord> findByUserIdOrderByRecordDateDescRecordIdDesc(Long userId, Pageable pageable);}

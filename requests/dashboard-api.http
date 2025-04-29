@@ -1,0 +1,157 @@
+### 変数定義 (ファイル先頭)
+# API のベース URL
+@baseUrl = http://localhost:8080/api
+
+# 認証用 JWT トークン (ログイン後に取得した値をここに貼り付ける)
+@authToken = Bearer 
+
+
+#################################################################
+# 認証関連 API (/api/users)
+#################################################################
+
+### [ユーザー登録] 新しいテストユーザーを作成 (必要に応じて実行)
+# @name registerUser
+POST {{baseUrl}}/users/register
+Content-Type: application/json
+
+{
+  "username": "apitestuser",
+  "password": "password123",
+  "email": "apitest@example.com" 
+}
+
+### [ログイン] ユーザー名とパスワードでログインし JWT を取得
+# @name loginUser
+POST {{baseUrl}}/users/login
+Content-Type: application/json
+
+{
+  "username": "apitestuser",  
+  "password": "password123" 
+}
+
+# >> このリクエストを実行後、レスポンスボディの "token" の値をコピーし、
+#    ファイル先頭の @authToken 変数に貼り付けてファイルを保存してください。
+
+
+#################################################################
+# ダッシュボード API (/api/dashboard)
+#################################################################
+
+### [ダッシュボード] サマリーデータを取得する (認証必須)
+# @name getDashboardSummary
+GET {{baseUrl}}/dashboard/summary
+Authorization: {{authToken}} 
+Accept: application/json
+
+###
+
+
+#################################################################
+# 学習記録 API (/api/learning-records)
+#################################################################
+
+### [学習記録登録] 新しい記録を登録する (認証必須)
+# @name createLearningRecord
+POST {{baseUrl}}/learning-records
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+  "recordDate": "2025-04-28", 
+  "durationMinutes": 60,
+  "learnedContent": "API テストケースの確認",
+  "understoodPoints": "JWT認証ヘッダーの確認",
+  "issues": "特になし",
+  "nextActions": "フロントエンド実装"
+}
+
+### [学習記録一覧取得] ログインユーザーの記録を取得 (認証必須)
+# @name getAllLearningRecords
+GET {{baseUrl}}/learning-records
+Authorization: {{authToken}}
+Accept: application/json
+
+### [学習記録詳細取得] ID を指定して取得 (認証必須)
+# @name getLearningRecordById
+# ↓↓↓ {recordId} を存在する ID (例: 1) に置き換える ↓↓↓
+GET {{baseUrl}}/learning-records/22
+Authorization: {{authToken}}
+Accept: application/json
+
+### [学習記録更新] ID を指定して更新 (認証必須)
+# @name updateLearningRecord
+# ↓↓↓ {recordId} を存在する ID (例: 1) に置き換える ↓↓↓
+PUT {{baseUrl}}/learning-records/22
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+  "recordDate": "2025-04-28",
+  "durationMinutes": 75, 
+  "learnedContent": "API テストケースの確認 (更新済み)", 
+  "understoodPoints": "PUT リクエストも成功",
+  "issues": "なし",
+  "nextActions": "フロントエンド実装"
+}
+
+### [学習記録削除] ID を指定して削除 (認証必須)
+# @name deleteLearningRecord
+# ↓↓↓ {recordId} を存在する ID (例: 1) に置き換える ↓↓↓
+DELETE {{baseUrl}}/learning-records/22
+Authorization: {{authToken}}
+
+###
+
+
+#################################################################
+# 目標管理 API (/api/goals)
+#################################################################
+
+### [目標登録] 新しい目標を作成する (認証必須)
+# @name createGoal
+POST {{baseUrl}}/goals
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+  "description": "フロントエンドの目標管理画面を作成する",
+  "targetDate": "2025-04-30",
+  "goalType": "WEEKLY"
+}
+
+### [目標一覧取得] ログインユーザーの目標を取得 (認証必須)
+# @name getAllGoals
+GET {{baseUrl}}/goals
+Authorization: {{authToken}}
+Accept: application/json
+
+### [目標詳細取得] ID を指定して取得 (認証必須)
+# @name getGoalById
+# ↓↓↓ {goalId} を存在する ID (例: 1) に置き換える ↓↓↓
+GET {{baseUrl}}/goals/19
+Authorization: {{authToken}}
+Accept: application/json
+
+### [目標更新] ID を指定して更新 (認証必須)
+# @name updateGoal
+# ↓↓↓ {goalId} を存在する ID (例: 1) に置き換える ↓↓↓
+PUT {{baseUrl}}/goals/19
+Content-Type: application/json
+Authorization: {{authToken}}
+
+{
+  "description": "フロントエンドの目標管理画面を作成し、APIと連携する", 
+  "targetDate": "2025-05-01", 
+  "status": "IN_PROGRESS", 
+  "goalType": "WEEKLY"
+}
+
+### [目標削除] ID を指定して削除 (認証必須)
+# @name deleteGoal
+# ↓↓↓ {goalId} を存在する ID (例: 1) に置き換える ↓↓↓
+DELETE {{baseUrl}}/goals/19
+Authorization: {{authToken}}
+
+###
