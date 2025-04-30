@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import apiClient from "../api/apiClient";
 import GoalList from "../components/GoalList";
 import GoalForm from "../components/GoalForm";
@@ -14,6 +14,7 @@ function GoalsPage() {
   const [editingGoalData, setEditingGoalData] = useState(null); // 編集中データ
 
   useEffect(() => {
+    console.log('GoalsPage: useEffect triggered by listKey change:', listKey);
     const fetchGoals = async () => {
       setIsLoading(true);
       setError(null);
@@ -33,7 +34,7 @@ function GoalsPage() {
   }, [listKey]);
 
   // 目標登録関数
-  const handleCreateGoal = async (newGoalData) => {
+  const handleCreateGoal = useCallback(async (newGoalData) => {
     console.log("goalsPage: Creating new goal:", newGoalData);
     try {
       await apiClient.post("/goals", newGoalData);
@@ -43,11 +44,12 @@ function GoalsPage() {
       console.error("GoalsPage: 目標の追加に失敗しました:", err);
       alert("目標の追加に失敗しました。");
     }
-  };
+  },[]);
 
   // 削除関数
-  const handleDeleteGoal = async (goalId) => {
+  const handleDeleteGoal = useCallback(async (goalId) => {
     if (window.confirm(`ID: ${goalId} 目標を本当に削除しますか？`)) {
+      console.log(`GoalsPage: Deleting goal ID: ${goalId}`);
       try {
         await apiClient.delete(`/goals/${goalId}`);
         alert("目標を削除しました。");
@@ -57,7 +59,7 @@ function GoalsPage() {
         alert("目標の削除にしっぱいしました");
       }
     }
-  };
+  },[]);
 
   // 編集処理関数 ---
   const handleEditGoal = async (goalId) => {
@@ -82,7 +84,7 @@ function GoalsPage() {
   };
 
   // 状態更新処理関数 ---
-  const handleUpdateStatus = async (goalId, newStatus) => {
+  const handleUpdateStatus = useCallback(async (goalId, newStatus) => {
     console.log(`GoalsPage: Updating status for ID: ${goalId} to ${newStatus}`);
     // 更新対象の目標データを現在のリストから探す
     const targetGoal = goals.find(goal => goal.goalId === goalId);
@@ -108,7 +110,9 @@ function GoalsPage() {
       console.error("GoalsPage: 目標の状態更新に失敗しました:", err);
       alert('目標の状態更新に失敗しました。');
     }
-  };
+  },[goals]);
+
+
      // 編集フォームで更新が完了したときの処理関数
    const handleUpdateComplete = () => {
     console.log('GoalsPage: 更新が完了しました');
